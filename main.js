@@ -13,6 +13,8 @@ const $checkBoxItalic = document.querySelector(".italic");
 const ctx = canvas.getContext("2d");
 const cv = new Draw(canvas,ctx)
 const lang = document.querySelector(".lang");
+const btnRemove = document.getElementById('btn-remove')
+
 lang.value = localStorage.getItem('languaje') ?? "txt"
 lang.addEventListener('input', (e)=>{
   languaje = e.target.value
@@ -24,11 +26,10 @@ const images = {
   iconInstagram: img("icon/instagram.svg"),
   iconCube: img("icon/cube.svg"),
   iconAlert: img('icon/alert.svg'),
-  background: img('https://img.pikbest.com/origin/09/34/08/86cpIkbEsTCpk.jpg!bw700')
+  background: img('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0zMDktYWV3LTAxM18xXzEuanBn.jpg')
 
 }
 
-code.innerHTML = localStorage.getItem("html") 
 
 let title = localStorage.getItem('title') ?? '';
 let by = localStorage.getItem('by') ?? "you"
@@ -43,12 +44,12 @@ let paddingLineNumbers = 50
 let languaje = lang.value
 
 function draw() {
+  code.innerHTML = localStorage.getItem("html") ?? "<div><div><span></span></div></div>";
 
   fontFamily =  $selectFontFamily.value
   
   const bgColor = getComputedStyle(document.querySelector('code>div')).backgroundColor
   snapCode.style.background = bgColor
-  document.body.style.backgroundColor = bgColor
 
   const rows = code.querySelectorAll("div > div, div > br");
   const bgf = new Set()
@@ -67,7 +68,8 @@ function draw() {
   let wLH = ctx.measureText(String(rows.length)).width
 
   // 🫧 Canvas Dimensitions
-  canvas.width = padding*2 + (paddingLineNumbers*2 + wLH) * 2 + bgfMax ;
+  canvas.width = padding*2 + (paddingLineNumbers*2 + wLH) * 2 + bgfMax;
+  canvas.width = canvas.width < 1600 ? 1600 : canvas.width;
   canvas.height = (padding*2) + heightCode + 190;
 
   if (fondo) {
@@ -84,11 +86,13 @@ function draw() {
   }
 
 
-  ctx.fillStyle = bgColor;
+  
   ctx.shadowColor = "rgba(0, 0, 0, .2)";
   ctx.shadowBlur = padding;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
+  ctx.fillStyle = bgColor;
+  ctx.globalAlpha = 0.9
   cv.drawRoundedRect(
     padding,
     padding,
@@ -96,7 +100,7 @@ function draw() {
     canvas.height - padding * 2,
     30
   );
-
+  ctx.globalAlpha = 1
   // 🫧 Bar Status
   let heightStatusBar = lineHeight*1.2
   ctx.shadowBlur = 0
@@ -158,8 +162,8 @@ function draw() {
 
     ctx.textAlign = "left";
 
-    // FIXME Aug 12: Crear mas pasos
-    if (row[0] !== undefined && /\s/.test(row[0].textContent)) {
+    // ✏️ Indentation
+    if (row[0] !== undefined && /^\s/.test(row[0].textContent)) {
       let r = ctx.measureText("..").width;
       let text = row[0].textContent;
       let gj = text.match(/\s/g);
@@ -272,9 +276,10 @@ btnPaste.addEventListener("click", async () => {
     if (clipboardItem.types.includes("text/html")) {
       const htmlBlob = await clipboardItem.getType("text/html");
       const htmlText = await htmlBlob.text();
-      code.innerHTML = htmlText;
+      localStorage.setItem('html', htmlText)
     }
   }
+
   draw();
 });
 
@@ -304,7 +309,10 @@ $by.addEventListener('input', (e)=>{
 
 $checkBoxItalic.addEventListener('click', draw)
 
-
+btnRemove.addEventListener('click', () => {
+  localStorage.removeItem('html')
+  draw()
+})
 
 
 
