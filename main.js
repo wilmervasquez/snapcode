@@ -2,37 +2,40 @@ import { Draw } from "./lib/canvas.js";
 import { img, months } from './lib/util.js'
 
 const snapCode = document.querySelector(".snap-code");
-const $selectFontFamily = document.querySelector("select");
 const code = document.querySelector(".code");
 const canvas = document.querySelector("canvas");
 const cvW = document.querySelector(".canvas-width");
-const $title = document.querySelector(".title");
-const $by = document.querySelector(".by");
+
+// Inputs
+const $title = document.getElementById("title");
+const $by = document.getElementById("by");
+const $lang = document.getElementById("languaje");
+const $background = document.getElementById("background");
+
+// Selects
+const $selectIconNetwork = document.getElementById("select-icon-network");
+const $selectFontFamily = document.querySelector("select");
+
 const cvH = document.querySelector(".canvas-height");
 const $checkBoxItalic = document.querySelector(".italic");
 const ctx = canvas.getContext("2d");
 const cv = new Draw(canvas,ctx)
-const lang = document.querySelector(".lang");
 const btnRemove = document.getElementById('btn-remove')
 
-lang.value = localStorage.getItem('languaje') ?? "txt"
-lang.addEventListener('input', (e)=>{
+$lang.value = localStorage.getItem('languaje') ?? "txt"
+$lang.addEventListener('input', (e)=>{
   languaje = e.target.value
   localStorage.setItem('languaje',languaje)
   draw()
 })
 
-const images = {
-  iconInstagram: img("icon/instagram.svg"),
-  iconCube: img("icon/cube.svg"),
-  iconAlert: img('icon/alert.svg'),
-  background: img('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0zMDktYWV3LTAxM18xXzEuanBn.jpg')
 
-}
 
 
 let title = localStorage.getItem('title') ?? '';
 let by = localStorage.getItem('by') ?? "you"
+
+
 $title.value = title
 $by.value = by
 let fontSize = 42
@@ -41,10 +44,17 @@ let fondo = true;
 let padding = fontSize;
 let fontFamily = "Source Code Pro"
 let paddingLineNumbers = 50
-let languaje = lang.value
+let languaje = $lang.value
+
+const images = {
+  iconCube: img("icon/cube.svg"),
+  iconAlert: img('icon/alert.svg'),
+  background: img(localStorage.getItem('background') ?? 'https://i.pinimg.com/736x/a2/fb/15/a2fb154b723932e8418c09c4ec2e0a08.jpg'),
+  iconNetwork: img(localStorage.getItem('iconNetwork') ?? 'icon/instagram.svg')
+}
 
 function draw() {
-  code.innerHTML = localStorage.getItem("html") ?? "<div><div><span></span></div></div>";
+  code.innerHTML = localStorage.getItem("html") ?? `<div style="color: #abb2bf;background-color: #282c34;font-family: Cascadia Code, MonoLisa, Consolas, 'Courier New', monospace;font-weight: normal;font-size: 14px;line-height: 19px;white-space: pre;"><div><span style="color: hsl(${Math.random()*360},100%,70%);font-style: italic;">Paste your code from VSCode</span></div></div>`;
 
   fontFamily =  $selectFontFamily.value
   
@@ -129,9 +139,6 @@ function draw() {
   cv.fillCircle(padding + 60, padding + 60, 16, "#F76452");
   cv.fillCircle(padding + 120, padding + 60, 16, "#fdbf2c");
   cv.fillCircle(padding + 180, padding + 60, 16, "#1ecf37");
-  console.dir(ctx)
-  
-
 
   const cod = { x: padding + (paddingLineNumbers*2)+wLH, y: padding + 120 };
 
@@ -234,10 +241,10 @@ function draw() {
   ctx.font = '38px DM Sans'
 
   let today = new Date() 
-  ctx.fillText(`▶ ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}    Ln ${rows.length}, Col ${colsMax}`, padding + 30, canvas.height - padding-heightStatusBar/2)
+  ctx.fillText(`∿ ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}    Ln ${rows.length}, Col ${colsMax}`, padding + 30, canvas.height - padding-heightStatusBar/2)
   ctx.textAlign = 'right'
   ctx.drawImage(
-    images.iconInstagram, 
+    images.iconNetwork, 
     canvas.width - padding - paddingLineNumbers-ctx.measureText(by).width-ctx.measureText(languaje).width-145, 
     canvas.height-padding - (heightStatusBar/4)*3-4, 
     42,
@@ -266,8 +273,6 @@ function draw() {
   localStorage.setItem("html", code.innerHTML)
 }
 
-draw();
-
 const btnPaste = document.querySelector(".btn-paste");
 btnPaste.addEventListener("click", async () => {
   const clipboardItems = await navigator.clipboard.read();
@@ -295,17 +300,19 @@ $by.addEventListener('input', (e)=>{
   localStorage.setItem('by',by)
   draw()
 });
-// JavaScript All array methods Cheatsheet
+$background.addEventListener('keyup', (e)=>{
+  console.log(e)
+  if(e.key === 'Enter'){ 
+    localStorage.setItem('background',e.target.value)
+    images.background.src = e.target.value
+    images.background.onload = () => draw();
+  }
+});
 
-// @amazingfarooqq
-
-
-
-
-
-
-
-
+$selectIconNetwork.addEventListener('change', (e)=>{
+  images.iconNetwork.src = `icon/${e.target.value}.svg`
+  images.iconNetwork.onload = () => draw();
+});
 
 $checkBoxItalic.addEventListener('click', draw)
 

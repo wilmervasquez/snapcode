@@ -1,0 +1,104 @@
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 12px;
+  gap: 12px;
+}
+label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.select-pro {
+  background: #282C34;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+  border-radius: 8px;
+}
+.select-pro select{
+  background-color: #282C34;
+  padding-left: 8px;
+  padding-top:5px ;
+  padding-bottom:5px ;
+  border-radius: 8px;
+}
+
+/* Inpt Style Google */
+.input-pro {
+  width: max-content;
+  display: grid;
+  grid-template-areas: "input";
+  border: 1px solid hsl(0, 0%, 25%);
+  border-radius: 8px;
+}
+.input-pro input {
+  grid-area: input;
+  width: 200px;
+  font: inherit;
+  background-color: transparent;
+  padding: 8px 12px;
+  font-size: 14px;
+  z-index: 2;
+  color: hsl(0, 0%, 75%);
+}
+.input-pro span {
+  grid-area: input;
+  z-index: 1;
+  width: max-content;
+  padding: 0 12px;
+  align-self: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #a1a1a1;
+  transition: transform .2s linear;
+}
+.input-pro input:focus + span, .input-pro input:not(:placeholder-shown) + span {
+  transform: translateY(-50%) translateX(8px);
+  padding: 0 8px;
+  background-color: #171F2B;
+  color: blueviolet;
+  font-size: 12px;
+}
+.input-pro:has(input:focus) {
+  border: 1px solid blueviolet;
+}
+
+.info {
+  color: rgba(255, 255, 255, 0.466);
+  display: flex;
+  gap: 20px;
+  padding: 5px 10px;
+}
+.snap-code {
+  background-color: #322b33;
+  padding: 8px 14px;
+  margin: 0 8px 8px 8px;
+  border-radius: 14px;
+  display: none;
+}
+.code {
+  font-family: Cascadia Code;
+  color: hsl(296, 66%, 52%);
+}
+canvas {
+  font-feature-settings: 'ss01','cv02','cv27', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07','ss09','ss20','cv31', 'calt', 'dlig','zero','onum';
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto ;
+  display: block;
+}
+.btn-paste, #btn-remove {
+  padding: 0px 12px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  background-color: #ae00ff;
+  cursor: pointer;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, .3);
+  color: white;
+}

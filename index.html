@@ -3,33 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="icon/favicon.svg" type="image/x-icon">
+  <link rel="stylesheet" href="style/base.css">
+  <link rel="stylesheet" href="style/style.css">
   <title>Snap Code</title>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="controls">
     <div class="btn-paste">Paste</div>
     <div id="btn-remove">Remove</div>
 
-    <select name="" id="">
-      <option value="Cascadia Code">Cascadia Code</option>
-      <option value="Dank Mono">Dank Mono</option>
-      <option value="Source Code Pro">Source Code Pro</option>
-      <option value="MonoLisa">MonoLisa</option>
-      <option value="JetBrains Mono">JetBrains Mono</option>
-      <option value="Comic Sans MS">Comic Sans MS</option>
-      <option value="Space Mono">Space Mono</option>
-      <option value="Fira Code">Fira Code</option>
-      <option value="Monaspace Radon">Monaspace Radon</option>
-      <option value="Monaspace Xenon">Monaspace Xenon</option>
-      <option value="Monaspace Krypton">Monaspace Krypton</option>
-      <option value="Monaspace Neon">Monaspace Neon</option>
-      <option value="Monaspace Argon">Monaspace Argon</option>
-      <option value="Anonymous Pro">Anonymous Pro</option>
-    </select>
-    <input type="text" placeholder="Title" class="title">
-    <input type="text" placeholder="By" class="by">
-    <input type="text" placeholder="Lang" class="lang">
+    <div class="select-pro">
+      <select name="" id="">
+        <option value="Cascadia Code">Cascadia Code</option>
+        <option value="Dank Mono">Dank Mono</option>
+        <option value="Source Code Pro">Source Code Pro</option>
+        <option value="MonoLisa">MonoLisa</option>
+        <option value="JetBrains Mono">JetBrains Mono</option>
+        <option value="Comic Sans MS">Comic Sans MS</option>
+        <option value="Space Mono">Space Mono</option>
+        <option value="Fira Code">Fira Code</option>
+        <option value="Monaspace Radon">Monaspace Radon</option>
+        <option value="Monaspace Xenon">Monaspace Xenon</option>
+        <option value="Monaspace Krypton">Monaspace Krypton</option>
+        <option value="Monaspace Neon">Monaspace Neon</option>
+        <option value="Monaspace Argon">Monaspace Argon</option>
+        <option value="Anonymous Pro">Anonymous Pro</option>
+      </select>
+    </div>
+    <div class="select-pro">
+      <select name="" id="select-icon-network">
+        <option value="instagram">Instagram</option>
+        <option value="facebook">Facebook</option>
+        <option value="github">Github</option>
+        <option value="twitter">twitter</option>
+        <option value="linkedin">LinkedIn</option>
+        <option value="threads">Threads</option>
+      </select>
+    </div>
+    <label for="background" class="input-pro">
+      <input type="text" placeholder=" " id="background">
+      <span>Background URL</span>
+    </label>
+    <label for="title" class="input-pro">
+      <input type="text" placeholder=" " id="title">
+      <span>Title</span>
+    </label>
+    <label for="languaje" class="input-pro">
+      <input type="text" placeholder=" " id="languaje">
+      <span>Languaje</span>
+    </label>
+    <label for="backgby" class="input-pro">
+      <input type="text" placeholder=" " id="by">
+      <span>By</span>
+    </label>
+  
     <label for="">
       <input type="checkbox" checked name="" id="" class="italic">
       Italic
