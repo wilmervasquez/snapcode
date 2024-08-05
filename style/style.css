@@ -50,7 +50,7 @@ label {
   width: max-content;
   padding: 0 12px;
   align-self: center;
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   align-items: center;
   font-size: 14px;
@@ -58,7 +58,7 @@ label {
   transition: transform .2s linear;
 }
 .input-pro input:focus + span, .input-pro input:not(:placeholder-shown) + span {
-  transform: translateY(-50%) translateX(8px);
+  transform: translateY(-2.9cqi) translateX(8px);
   padding: 0 8px;
   background-color: #171F2B;
   color: blueviolet;
@@ -86,11 +86,11 @@ label {
   color: hsl(296, 66%, 52%);
 }
 canvas {
-  font-feature-settings: 'ss01','cv02','cv27', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07','ss09','ss20','cv31', 'calt', 'dlig','zero','onum';
   width: 100%;
   max-width: 1000px;
   margin: 0 auto ;
   display: block;
+  image-rendering: pixelated;
 }
 .btn-paste, #btn-remove {
   padding: 0px 12px;

@@ -1,5 +1,5 @@
 import { Draw } from "./lib/canvas.js";
-import { img, months } from './lib/util.js'
+import {  img, months } from './lib/util.js'
 
 const snapCode = document.querySelector(".snap-code");
 const code = document.querySelector(".code");
@@ -11,13 +11,16 @@ const $title = document.getElementById("title");
 const $by = document.getElementById("by");
 const $lang = document.getElementById("languaje");
 const $background = document.getElementById("background");
+$background.value = localStorage.getItem('background') ?? ''
 
 // Selects
 const $selectIconNetwork = document.getElementById("select-icon-network");
 const $selectFontFamily = document.querySelector("select");
+$selectIconNetwork.value = localStorage.getItem('iconNetwork') ?? 'instagram'
 
 const cvH = document.querySelector(".canvas-height");
 const $checkBoxItalic = document.querySelector(".italic");
+const $ligatures = document.getElementById('font-ligatures')
 const ctx = canvas.getContext("2d");
 const cv = new Draw(canvas,ctx)
 const btnRemove = document.getElementById('btn-remove')
@@ -41,22 +44,33 @@ $by.value = by
 let fontSize = 42
 let lineHeight = 1.4 * fontSize
 let fondo = true;
+
+$ligatures.checked =  Boolean(Number(localStorage.getItem('font-ligatures') ?? '1'))
+canvas.style.fontFeatureSettings = $ligatures.checked ? "'ss01','cv02','cv27', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07','ss09','ss20','cv31', 'calt', 'dlig','zero','onum'" : "normal";
+
+$ligatures.addEventListener('click', ()=> {
+  canvas.style.fontFeatureSettings = $ligatures.checked ? "'ss01','cv02','cv27', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07','ss09','ss20','cv31', 'calt', 'dlig','zero','onum'" : "normal";
+  localStorage.setItem('font-ligatures', Number($ligatures.checked))
+  draw()
+})
+
 let padding = fontSize;
-let fontFamily = "Source Code Pro"
+let fontFamily = localStorage.getItem('fontFamily') ?? "Cascadia Code";
+$selectFontFamily.value = fontFamily
 let paddingLineNumbers = 50
 let languaje = $lang.value
 
 const images = {
   iconCube: img("icon/cube.svg"),
+  iconFolder: img("icon/folder.svg"),
+  iconPlay: img("icon/play.svg"),
   iconAlert: img('icon/alert.svg'),
   background: img(localStorage.getItem('background') ?? 'https://i.pinimg.com/736x/a2/fb/15/a2fb154b723932e8418c09c4ec2e0a08.jpg'),
-  iconNetwork: img(localStorage.getItem('iconNetwork') ?? 'icon/instagram.svg')
+  iconNetwork: img(`icon/${ localStorage.getItem('iconNetwork') ?? 'instagram'}.svg`)
 }
 
 function draw() {
   code.innerHTML = localStorage.getItem("html") ?? `<div style="color: #abb2bf;background-color: #282c34;font-family: Cascadia Code, MonoLisa, Consolas, 'Courier New', monospace;font-weight: normal;font-size: 14px;line-height: 19px;white-space: pre;"><div><span style="color: hsl(${Math.random()*360},100%,70%);font-style: italic;">Paste your code from VSCode</span></div></div>`;
-
-  fontFamily =  $selectFontFamily.value
   
   const bgColor = getComputedStyle(document.querySelector('code>div')).backgroundColor
   snapCode.style.background = bgColor
@@ -102,7 +116,7 @@ function draw() {
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
   ctx.fillStyle = bgColor;
-  ctx.globalAlpha = 0.9
+  ctx.globalAlpha = 0.95
   cv.drawRoundedRect(
     padding,
     padding,
@@ -142,12 +156,19 @@ function draw() {
 
   const cod = { x: padding + (paddingLineNumbers*2)+wLH, y: padding + 120 };
 
+
+  // 🫧 Icon Folder
+  let size = 50
+  ctx.drawImage(images.iconFolder, padding+240, padding+60-(size/2),size,size);
+
   // 🫧 Title
   ctx.textBaseline = "middle";
-  ctx.font = `42px Comic Sans MS`;
-  ctx.fillStyle = "rgba(255,255,255,.5)"
-  ctx.fillText(title, padding + 240, padding+60)
-  ctx.drawImage(images.iconCube, canvas.width-padding-90, padding+60-25,50,50);
+  ctx.font = `42px ${fontFamily}`;
+  ctx.fillStyle = `hsla(${Math.random()*360},100%,90%,.7)`
+  ctx.fillText(title, padding + 310, padding+60)
+
+  ctx.drawImage(images.iconCube, canvas.width-padding-90, padding+60-(size/2),size,size);
+  ctx.drawImage(images.iconPlay, canvas.width-padding-170, padding+60-(size/2),size,size);
 
   ctx.textBaseline = "top";
   rows.forEach((row, i) => {
@@ -170,20 +191,23 @@ function draw() {
     ctx.textAlign = "left";
 
     // ✏️ Indentation
-    if (row[0] !== undefined && /^\s/.test(row[0].textContent)) {
+    if (row[0] !== undefined && /^(\s\s)+/.test(row[0].textContent)) {
       let r = ctx.measureText("..").width;
-      let text = row[0].textContent;
-      let gj = text.match(/\s/g);
+      let text = [...row[0].textContent.replaceAll(/\s/g,' ')];
+      // let gj = text.match(/\s/g);
       ctx.fillStyle = "rgba(255,255,255,.1)";
 
-      for (let j = 0, k = 0; j < gj.length; j += 2) {
+      let tab = 0;
+      let k = 0
+      while(text[tab]==' ') {
         ctx.fillRect(
           cod.x + r * k,
           lineHeight * i + cod.y- 6,
           2,
           lineHeight
         );
-        k++;
+        k++
+        tab += 2
       }
     }
 
@@ -235,10 +259,11 @@ function draw() {
 
 
 
-  // 🫧 By Instagram
+  // 🫧 Bar Status Info
   ctx.textBaseline = 'middle'
-  ctx.fillStyle = "rgba(255,255,255,0.6)"
+  ctx.fillStyle = "rgb(255,255,255)"
   ctx.font = '38px DM Sans'
+  ctx.globalAlpha = 0.4
 
   let today = new Date() 
   ctx.fillText(`∿ ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}    Ln ${rows.length}, Col ${colsMax}`, padding + 30, canvas.height - padding-heightStatusBar/2)
@@ -263,6 +288,7 @@ function draw() {
     canvas.width - padding - 100, 
     canvas.height - padding-heightStatusBar/2
   )
+  ctx.globalAlpha = 1
 
 
   
@@ -288,7 +314,11 @@ btnPaste.addEventListener("click", async () => {
   draw();
 });
 
-$selectFontFamily.addEventListener('change', draw)
+$selectFontFamily.addEventListener('change', (e) => {
+  localStorage.setItem('fontFamily', e.target.value)
+  fontFamily = e.target.value
+  draw()
+})
 window.addEventListener('load',draw)
 $title.addEventListener('input', (e)=>{
   title = e.target.value
@@ -311,6 +341,7 @@ $background.addEventListener('keyup', (e)=>{
 
 $selectIconNetwork.addEventListener('change', (e)=>{
   images.iconNetwork.src = `icon/${e.target.value}.svg`
+  localStorage.setItem('iconNetwork', e.target.value )
   images.iconNetwork.onload = () => draw();
 });
 

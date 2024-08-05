@@ -16,3 +16,7 @@ input {
   outline: none;
   outline: none;
 }
+
+input[type=checkbox] {
+  accent-color: rgb(132, 0, 255);
+}
