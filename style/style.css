@@ -58,11 +58,12 @@ label {
   transition: transform .2s linear;
 }
 .input-pro input:focus + span, .input-pro input:not(:placeholder-shown) + span {
-  transform: translateY(-2.9cqi) translateX(8px);
+  transform: translateY(-19px) translateX(8px);
   padding: 0 8px;
   background-color: #171F2B;
   color: blueviolet;
   font-size: 12px;
+  padding: 4px;
 }
 .input-pro:has(input:focus) {
   border: 1px solid blueviolet;
