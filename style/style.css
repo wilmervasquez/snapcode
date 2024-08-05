@@ -63,7 +63,7 @@ label {
   background-color: #171F2B;
   color: blueviolet;
   font-size: 12px;
-  padding: 4px;
+  padding: 0 4px;
 }
 .input-pro:has(input:focus) {
   border: 1px solid blueviolet;
