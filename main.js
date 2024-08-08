@@ -19,8 +19,12 @@ const $selectFontFamily = document.querySelector("select");
 $selectIconNetwork.value = localStorage.getItem('iconNetwork') ?? 'instagram'
 
 const cvH = document.querySelector(".canvas-height");
+
+// CheckBoxs
 const $checkBoxItalic = document.querySelector(".italic");
 const $ligatures = document.getElementById('font-ligatures')
+const $fondo = document.getElementById('fondo')
+
 const ctx = canvas.getContext("2d");
 const cv = new Draw(canvas,ctx)
 const btnRemove = document.getElementById('btn-remove')
@@ -32,7 +36,7 @@ $lang.addEventListener('input', (e)=>{
   draw()
 })
 
-
+$fondo.addEventListener('change', draw)
 
 
 let title = localStorage.getItem('title') ?? '';
@@ -96,7 +100,7 @@ function draw() {
   canvas.width = canvas.width < 1600 ? 1600 : canvas.width;
   canvas.height = (padding*2) + heightCode + 190;
 
-  if (fondo) {
+  if ($fondo.checked) {
     cv.setBackground(bgColor)
     cv.setBackground('rgba(0,0,0,.2)')
 
@@ -290,8 +294,6 @@ function draw() {
   )
   ctx.globalAlpha = 1
 
-
-  
   // 👁️ Show Info Canvas
   cvW.textContent = "Width: " + canvas.width
   cvH.textContent = "Height: " + canvas.height

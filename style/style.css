@@ -59,7 +59,6 @@ label {
 }
 .input-pro input:focus + span, .input-pro input:not(:placeholder-shown) + span {
   transform: translateY(-19px) translateX(8px);
-  padding: 0 8px;
   background-color: #171F2B;
   color: blueviolet;
   font-size: 12px;
@@ -91,7 +90,6 @@ canvas {
   max-width: 1000px;
   margin: 0 auto ;
   display: block;
-  image-rendering: pixelated;
 }
 .btn-paste, #btn-remove {
   padding: 0px 12px;
