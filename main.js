@@ -69,7 +69,7 @@ const images = {
   iconFolder: img("icon/folder.svg"),
   iconPlay: img("icon/play.svg"),
   iconAlert: img('icon/alert.svg'),
-  background: img(localStorage.getItem('background') ?? 'https://i.pinimg.com/736x/a2/fb/15/a2fb154b723932e8418c09c4ec2e0a08.jpg'),
+  background: img(localStorage.getItem('background') ?? './img/background.png'),
   iconNetwork: img(`icon/${ localStorage.getItem('iconNetwork') ?? 'instagram'}.svg`)
 }
 
@@ -77,12 +77,14 @@ function draw() {
   code.innerHTML = localStorage.getItem("html") ?? `<div style="color: #abb2bf;background-color: #282c34;font-family: Cascadia Code, MonoLisa, Consolas, 'Courier New', monospace;font-weight: normal;font-size: 14px;line-height: 19px;white-space: pre;"><div><span style="color: hsl(${Math.random()*360},100%,70%);font-style: italic;">Paste your code from VSCode</span></div></div>`;
   
   const bgColor = getComputedStyle(document.querySelector('code>div')).backgroundColor
-  snapCode.style.background = bgColor
+  console.log()
+  let isDark = bgColor.match(/\d+/g).reduce((ac, v)=>ac + Number(v),0) / 3 < 127;
 
+  console.log(isDark)
   const rows = code.querySelectorAll("div > div, div > br");
   const bgf = new Set()
   let colsMax = new Set()
-
+  
   let heightCode = rows.length * lineHeight;
   rows.forEach((row)=>{
     ctx.font = `42px ${fontFamily}`;
@@ -91,19 +93,17 @@ function draw() {
   })
   colsMax = Math.max(...colsMax)
   const bgfMax = Math.max(...bgf)
-
+  
   ctx.font = `42px ${fontFamily}`;
   let wLH = ctx.measureText(String(rows.length)).width
-
+  
   // 🫧 Canvas Dimensitions
   canvas.width = padding*2 + (paddingLineNumbers*2 + wLH) * 2 + bgfMax;
   canvas.width = canvas.width < 1600 ? 1600 : canvas.width;
-  canvas.height = (padding*2) + heightCode + 190;
-
+  canvas.height = (padding*2) + heightCode + 200;
+  
+  // return
   if ($fondo.checked) {
-    cv.setBackground(bgColor)
-    cv.setBackground('rgba(0,0,0,.2)')
-
     ctx.drawImage(
       images.background, 
       0,
@@ -120,15 +120,15 @@ function draw() {
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
   ctx.fillStyle = bgColor;
-  ctx.globalAlpha = 0.95
-  cv.drawRoundedRect(
+  cv.rectRound(
     padding,
     padding,
     canvas.width - padding * 2,
     canvas.height - padding * 2,
     30
-  );
-  ctx.globalAlpha = 1
+  ).fill();
+  ctx.filter = 'none';
+
   // 🫧 Bar Status
   let heightStatusBar = lineHeight*1.2
   ctx.shadowBlur = 0
@@ -143,20 +143,20 @@ function draw() {
 
   ctx.strokeStyle = "rgba(255,255,255,.1)";
   ctx.lineWidth = 2;
-  cv.drawRoundedStroke(
+  cv.rectRound(
     padding+1,
     padding+1,
     canvas.width - (padding * 2)-2,
     canvas.height - (padding * 2) -2,
     32
-  );
+  ).stroke();
 
   ctx.shadowBlur = 0;
 
   // circle
-  cv.fillCircle(padding + 60, padding + 60, 16, "#F76452");
-  cv.fillCircle(padding + 120, padding + 60, 16, "#fdbf2c");
-  cv.fillCircle(padding + 180, padding + 60, 16, "#1ecf37");
+  cv.circle(padding + 60, padding + 60, 16, "#F76452").fill();
+  cv.circle(padding + 120, padding + 60, 16, "#fdbf2c").fill();
+  cv.circle(padding + 180, padding + 60, 16, "#1ecf37").fill();
 
   const cod = { x: padding + (paddingLineNumbers*2)+wLH, y: padding + 120 };
 
@@ -168,7 +168,7 @@ function draw() {
   // 🫧 Title
   ctx.textBaseline = "middle";
   ctx.font = `42px ${fontFamily}`;
-  ctx.fillStyle = `hsla(${Math.random()*360},100%,90%,.7)`
+  ctx.fillStyle = `hsla(${Math.random()*360},100%,${isDark ? '90%,.7' : '50%,.7'})`
   ctx.fillText(title, padding + 310, padding+60)
 
   ctx.drawImage(images.iconCube, canvas.width-padding-90, padding+60-(size/2),size,size);
@@ -179,7 +179,7 @@ function draw() {
     
     // line Numbers
     ctx.textAlign = "right";
-    ctx.fillStyle = "rgba(255,255,255,.2)";
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,.2)' : 'rgba(0,0,0,.4)';
     ctx.font = `42px ${fontFamily}`;
     ctx.fillText(
       i+1,
@@ -217,13 +217,13 @@ function draw() {
 
     if(Math.random() >= 0.5) {
       ctx.fillStyle="rgb(255,255,255,0.1)"
-      cv.drawRoundedRect(
+      cv.rectRound(
         canvas.width-padding-20,
         cod.y + (i * lineHeight) + (lineHeight/4) ,
         10,
         lineHeight*0.5,
         5
-      )
+      ).fill();
     }
 
     let left = cod.x
@@ -335,7 +335,7 @@ $by.addEventListener('input', (e)=>{
 $background.addEventListener('keyup', (e)=>{
   console.log(e)
   if(e.key === 'Enter'){ 
-    localStorage.setItem('background',e.target.value)
+    localStorage.setItem('background', e.target.value)
     images.background.src = e.target.value
     images.background.onload = () => draw();
   }
