@@ -113,8 +113,6 @@ function draw() {
     )
   }
 
-
-  
   ctx.shadowColor = "rgba(0, 0, 0, .2)";
   ctx.shadowBlur = padding;
   ctx.shadowOffsetX = 0;
@@ -141,7 +139,7 @@ function draw() {
     32
   )
 
-  ctx.strokeStyle = "rgba(255,255,255,.1)";
+  ctx.strokeStyle = isDark ? "rgba(255,255,255,.1)" : 'rgba(0,0,0,.2)';
   ctx.lineWidth = 2;
   cv.rectRound(
     padding+1,
@@ -163,16 +161,21 @@ function draw() {
 
   // 🫧 Icon Folder
   let size = 50
+  ctx.filter = isDark ? 'none' : 'invert(100)'
   ctx.drawImage(images.iconFolder, padding+240, padding+60-(size/2),size,size);
+  ctx.filter = 'none'
 
   // 🫧 Title
   ctx.textBaseline = "middle";
   ctx.font = `42px ${fontFamily}`;
-  ctx.fillStyle = `hsla(${Math.random()*360},100%,${isDark ? '90%,.7' : '50%,.7'})`
+  // ctx.fillStyle = `hsla(${Math.random()*360},100%,${isDark ? '90%,.7' : '10%,.7'})`
+  ctx.fillStyle = isDark ? `oklch(83% 0.1 ${Math.random()*360}deg / 0.5)` : '#00000099'
   ctx.fillText(title, padding + 310, padding+60)
 
+  ctx.filter = isDark ? 'none' : 'invert(100)'
   ctx.drawImage(images.iconCube, canvas.width-padding-90, padding+60-(size/2),size,size);
   ctx.drawImage(images.iconPlay, canvas.width-padding-170, padding+60-(size/2),size,size);
+  ctx.filter = 'none'
 
   ctx.textBaseline = "top";
   rows.forEach((row, i) => {
@@ -265,13 +268,14 @@ function draw() {
 
   // 🫧 Bar Status Info
   ctx.textBaseline = 'middle'
-  ctx.fillStyle = "rgb(255,255,255)"
+  ctx.fillStyle = isDark ? "rgb(255,255,255)" : "rgb(0,0,0)"
   ctx.font = '38px DM Sans'
   ctx.globalAlpha = 0.4
 
   let today = new Date() 
   ctx.fillText(`∿ ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}    Ln ${rows.length}, Col ${colsMax}`, padding + 30, canvas.height - padding-heightStatusBar/2)
-  ctx.textAlign = 'right'
+
+  ctx.filter = isDark ? 'none' : 'invert(100)'
   ctx.drawImage(
     images.iconNetwork, 
     canvas.width - padding - paddingLineNumbers-ctx.measureText(by).width-ctx.measureText(languaje).width-145, 
@@ -286,6 +290,9 @@ function draw() {
     42,
     42
   )
+  ctx.filter = 'none'
+
+  ctx.textAlign = 'right'
   ctx.fillText( by, canvas.width - padding - ctx.measureText(languaje).width-150, canvas.height - padding-heightStatusBar/2)
   ctx.fillText(
     languaje, 
