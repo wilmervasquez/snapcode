@@ -1,5 +1,5 @@
 import { Draw } from "./lib/canvas.js";
-import {  img, months } from './lib/util.js'
+import {  fontFeatureSettings, img, months } from './lib/util.js'
 
 const snapCode = document.querySelector(".snap-code");
 const code = document.querySelector(".code");
@@ -50,10 +50,10 @@ let lineHeight = 1.4 * fontSize
 let fondo = true;
 
 $ligatures.checked =  Boolean(Number(localStorage.getItem('font-ligatures') ?? '1'))
-canvas.style.fontFeatureSettings = $ligatures.checked ? "'ss01','cv02','cv27', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07','ss09','ss20','cv31', 'calt', 'dlig','zero','onum'" : "normal";
+canvas.style.fontFeatureSettings = $ligatures.checked ? fontFeatureSettings.MonoLisa : "normal";
 
 $ligatures.addEventListener('click', ()=> {
-  canvas.style.fontFeatureSettings = $ligatures.checked ? "'ss01','cv02','cv27', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07','ss09','ss20','cv31', 'calt', 'dlig','zero','onum'" : "normal";
+  canvas.style.fontFeatureSettings = $ligatures.checked ? fontFeatureSettings.MonoLisa : "normal";
   localStorage.setItem('font-ligatures', Number($ligatures.checked))
   draw()
 })
