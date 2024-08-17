@@ -1,6 +1,6 @@
 
 import { Draw } from "./lib/canvas.js";
-import {  fontFeatureSettings, img, months } from './lib/util.js'
+import {  fontFeatureSettings, images, months } from './lib/util.js'
 
 const snapCode = document.querySelector(".snap-code");
 const code = document.querySelector(".code");
@@ -44,7 +44,12 @@ $lang.addEventListener('input', (e)=>{
 $fondo.addEventListener('change', draw)
 
 const codeSpace = {
-  linesInPlainText: []
+  linesInPlainText: [],
+  comment: {
+    match: /\/\/ /,
+    replace: "↝ ",
+    startsWith: "//"
+  }
 }
 
 
@@ -52,7 +57,8 @@ let title = localStorage.getItem('title') ?? '';
 let by = localStorage.getItem('by') ?? "you"
 
 const config = {
-  borderRadius: 30
+  borderRadius: 30,
+  fontFeatureSettings: fontFeatureSettings.CascadiaCode
 }
 $title.value = title
 app.by.value = by
@@ -61,10 +67,10 @@ let lineHeight = 1.4 * fontSize
 let fondo = true;
 
 $ligatures.checked =  Boolean(Number(localStorage.getItem('font-ligatures') ?? '1'))
-canvas.style.fontFeatureSettings = $ligatures.checked ? fontFeatureSettings.MonoLisa : "normal";
+canvas.style.fontFeatureSettings = $ligatures.checked ? config.fontFeatureSettings : "normal";
 
 $ligatures.addEventListener('click', ()=> {
-  canvas.style.fontFeatureSettings = $ligatures.checked ? fontFeatureSettings.MonoLisa : "normal";
+  canvas.style.fontFeatureSettings = $ligatures.checked ? config.fontFeatureSettings : "normal";
   localStorage.setItem('font-ligatures', Number($ligatures.checked))
   draw()
 })
@@ -72,63 +78,61 @@ $ligatures.addEventListener('click', ()=> {
 let padding = 30;
 let fontFamily = localStorage.getItem('fontFamily') ?? "Cascadia Code";
 $selectFontFamily.value = fontFamily
+updateFontFeatureSettings()
 let paddingLineNumbers = 50
 let languaje = $lang.value
 
-const images = {
-  iconCube: img("icon/cube.svg"),
-  iconFolder: img("icon/folder.svg"),
-  iconPlay: img("icon/play.svg"),
-  iconAlert: img('icon/alert.svg'),
-  background: img(localStorage.getItem('background') ?? './img/background.png'),
-  iconNetwork: img(`icon/${ localStorage.getItem('iconNetwork') ?? 'instagram'}.svg`)
-}
+
 
 
 function loadStructCodeSpace() {
-  code.innerHTML = localStorage.getItem("html") ?? `<div style="color: #abb2bf;background-color: #282c34;font-family: Cascadia Code, MonoLisa, Consolas, 'Courier New', monospace;font-weight: normal;font-size: 14px;line-height: 19px;white-space: pre;"><div><span style="color: hsl(${Math.random()*360},100%,70%);font-style: italic;">Paste your code from VSCode</span></div></div>`;
-  codeSpace.bgColor = getComputedStyle(document.querySelector('code>div')).backgroundColor
-  codeSpace.isDark = codeSpace.bgColor.match(/\d+/g).reduce((ac, v)=>ac + Number(v),0) / 3 < 127;
-
-  let rows = []
-  let linesInPlainText = []
-  let $rows = code.querySelectorAll("div > div, div > br");
-
-  $rows.forEach(($line) => {
-    let line = []
-    linesInPlainText.push($line.innerText)
-    $line.childNodes.forEach(($token) => {
-      let $lineComputedStyle = getComputedStyle($token);
-      if ($token.innerText.startsWith('//')) {
-        line.push({
-          textContent: "↝ ",
-          fontStyle: 'normal',
-          fontWeight: $lineComputedStyle.fontWeight,
-          color: $lineComputedStyle.color,
-     
-
-        })
-        line.push({
-          textContent: $token.innerText.replace(/^\/\/ /,""),
-          fontStyle: 'normal',
-          fontWeight: $lineComputedStyle.fontWeight,
-          color: $lineComputedStyle.color,
-        })
-      } else {
-
-        line.push({
-          textContent: $token.innerText,
-          fontStyle: $lineComputedStyle.fontStyle,
-          fontWeight: $lineComputedStyle.fontWeight,
-          color: $lineComputedStyle.color,
-        })
-      }
-    })
-    rows.push(line)
-  });
-
-  codeSpace.rows = rows
-  codeSpace.linesInPlainText = linesInPlainText;
+  try {
+    code.innerHTML = localStorage.getItem("html") ?? `<div style="color: #abb2bf;background-color: #282c34;font-family: Cascadia Code, MonoLisa, Consolas, 'Courier New', monospace;font-weight: normal;font-size: 14px;line-height: 19px;white-space: pre;"><div><span style="color: hsl(${Math.random()*360},100%,70%);font-style: italic;">Paste your code from VSCode</span></div></div>`;
+    codeSpace.bgColor = getComputedStyle(document.querySelector('code>div')).backgroundColor
+    codeSpace.isDark = codeSpace.bgColor.match(/\d+/g).reduce((ac, v)=>ac + Number(v),0) / 3 < 127;
+  
+    let rows = []
+    let linesInPlainText = []
+    let $rows = code.querySelectorAll("div > div, div > br");
+  
+    $rows.forEach(($line) => {
+      let line = []
+      linesInPlainText.push($line.innerText)
+      $line.childNodes.forEach(($token) => {
+        let $lineComputedStyle = getComputedStyle($token);
+        if ($token.innerText.startsWith(codeSpace.comment.startsWith)) {
+          line.push({
+            textContent: codeSpace.comment.replace,
+            fontStyle: 'normal',
+            fontWeight: $lineComputedStyle.fontWeight,
+            color: $lineComputedStyle.color,
+       
+  
+          })
+          line.push({
+            textContent: $token.innerText.replace(codeSpace.comment.match, ""),
+            fontStyle: 'normal',
+            fontWeight: $lineComputedStyle.fontWeight,
+            color: $lineComputedStyle.color,
+          })
+        } else {
+  
+          line.push({
+            textContent: $token.innerText,
+            fontStyle: $lineComputedStyle.fontStyle,
+            fontWeight: $lineComputedStyle.fontWeight,
+            color: $lineComputedStyle.color,
+          })
+        }
+      })
+      rows.push(line)
+    });
+  
+    codeSpace.rows = rows
+    codeSpace.linesInPlainText = linesInPlainText;
+  } catch (error) {
+    
+  }
 }
 loadStructCodeSpace()
 
@@ -167,7 +171,7 @@ function draw() {
   }
 
   drw.setShadow("hsl(0,0%,0%, 0.3)", padding, 0 ,0)
-  console.dir(ctx)
+ 
   ctx.fillStyle = codeSpace.bgColor;
   drw.rectRound(
     padding,
@@ -218,8 +222,8 @@ function draw() {
 
   // 🫧 Title
   ctx.textBaseline = "middle";
-  // ctx.fillStyle = `hsla(${Math.random()*360},100%,${isDark ? '90%,.7' : '10%,.7'})`
-  ctx.fillStyle = codeSpace.isDark ? `oklch(83% 0.1 ${Math.random()*360}deg)` : '#00000099'
+
+  ctx.fillStyle = codeSpace.isDark ? `rgba(255,255,255,0.5)` : '#00000099'
   ctx.fillText(title, padding + 310, padding+60)
 
   ctx.filter = codeSpace.isDark ? 'none' : 'invert(100)'
@@ -299,7 +303,7 @@ function draw() {
         
         drw.setFont(fontSize,fontFamily, fontWeight, fontStyle);
       } else {
-        drw.setFont(fontSize,fontFamily, fg.fontWeight);
+        drw.setFont(fontSize,fontFamily, fontWeight);
       }
 
       
@@ -382,9 +386,18 @@ btnPaste.addEventListener("click", async () => {
   draw();
 });
 
+function updateFontFeatureSettings() {
+  switch (fontFamily) {
+    case 'mls': canvas.style.fontFeatureSettings =fontFeatureSettings.MonoLisa; break;
+    case 'Cascadia Code': canvas.style.fontFeatureSettings = fontFeatureSettings.CascadiaCode; break;
+    case 'Fira Code': canvas.style.fontFeatureSettings = fontFeatureSettings.FiraCode; break;
+  }
+}
+
 $selectFontFamily.addEventListener('change', (e) => {
   localStorage.setItem('fontFamily', e.target.value)
   fontFamily = e.target.value
+  updateFontFeatureSettings()
   draw()
 })
 window.addEventListener('load',draw)
